@@ -3,7 +3,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
 const filterUserForClient = (user: User) => {
   // only return the fields we want the client to see
@@ -14,6 +14,7 @@ export const postsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       take: 100,
+      orderBy: [{ createdAt: "desc"}]
     });
 
     const users = (
@@ -43,4 +44,21 @@ export const postsRouter = createTRPCRouter({
     });
 
   }),
+
+  create: privateProcedure
+    .input(z.object({ // zod validates the shape of the data in post.content
+      content: z.string().emoji().min(1).max(280),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId; // we have info from current user because we already asserted they exist in the middleware(privateProcedure)
+      const post = await ctx.prisma.post.create({ 
+        data: {
+          authorId,
+          content: input.content,
+        }
+      });
+
+      return post;
+    }),
+
 });
