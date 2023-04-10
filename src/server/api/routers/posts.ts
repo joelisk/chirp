@@ -58,7 +58,7 @@ export const postsRouter = createTRPCRouter({
 
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
-      take: 100,
+      take: 100, // instead of hard-coding, can take pagination with infinite queries. check t3 docs
       orderBy: [{ createdAt: "desc"}]
     });
 

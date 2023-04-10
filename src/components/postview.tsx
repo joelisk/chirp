@@ -19,6 +19,7 @@ export const PostView = (props: PostWithUser ) => {
       />
       <div className="flex flex-col">
         <div className="flex text-slate-300 gap-1">
+          {/* ideally want the whole card clickable - cant have a link within a link so do DOM hierarchy stuff */}
           <Link href={`/@${author.username}`}>
             <span>{`@${author.username}`}</span>
           </Link>

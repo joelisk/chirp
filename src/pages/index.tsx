@@ -28,6 +28,13 @@ const CreatePostWizard = () => {
     }
   });
 
+  // DONT do useState for this. use react-hook-form instead
+  // can share the validation logic between the client and the server
+
+  // also in the future - would be nice to have the database synchronized with Clerk
+  // ideally map user to post with a relation not by an authorID string
+
+  // Vercel open graph (OG) image generation
   const [input, setInput] = useState("");
 
   if (!user) return null;
